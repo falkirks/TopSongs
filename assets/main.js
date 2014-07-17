@@ -19,13 +19,12 @@ var opts = {
 var curr;
 var player = false;
 var paused = true;
-var target = document.getElementById('spin');
-var spinner = new Spinner(opts).spin(target);
+var spinner = new Spinner(opts).spin(document.getElementById('spin'));
 
 $.get( "/render.php", function( data ) {
     $( ".table-hover" ).html( data );
-    $( "tr" ).click(function(event) {
-        if(event.delegateTarget.getAttribute("href") == curr){
+    $(document).on('click', 'tr', function(event){
+        if($(this).attr("href") == curr){
             if(player.paused()) player.play();
             else player.pause();
         }
@@ -34,12 +33,23 @@ $.get( "/render.php", function( data ) {
                 player.dispose();
                 $('<video id="player" src="" width="0" height="0" preload="auto" loop="loop"></video>').appendTo( "body" );
             }
-            curr = event.delegateTarget.getAttribute("href");
-            videojs('player', { "techOrder": ["youtube"], "src": event.delegateTarget.getAttribute("href") }).ready(function() {
+            curr = $(this).attr("href");
+            videojs('player', { "techOrder": ["youtube"], "src": curr }).ready(function() {
                 player = this;
                 player.play();
             });
         }
     });
-    spinner.stop();
+    $( "#search-box" ).submit(function( event ) {
+        if($("#search-text").val() !== ""){
+            $("#spin").show();
+            $.get( "/render.php?q=" + $( "#search-text").val(), function( data ) {
+                $( ".table-hover" ).html( data );
+                $( "#search-text").val("");
+                $("#spin").hide();
+            });
+        }
+        event.preventDefault();
+    });
+    $("#spin").hide();
 });
