@@ -43,9 +43,9 @@ $.get( "/render.php", function( data ) {
     $( "#search-box" ).submit(function( event ) {
         if($("#search-text").val() !== ""){
             $("#spin").show();
-            $.get( "/render.php?q=" + $( "#search-text").val(), function( data ) {
+            $( "#search-text").val("");
+            $.get( "/render.php?q=" + encodeURIComponent($( "#search-text").val()), function( data ) {
                 $( ".table-hover" ).html( data );
-                $( "#search-text").val("");
                 $("#spin").hide();
             });
         }
