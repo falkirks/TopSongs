@@ -43,11 +43,11 @@ $.get( "/render.php", function( data ) {
     $( "#search-box" ).submit(function( event ) {
         if($("#search-text").val() !== ""){
             $("#spin").show();
-            $( "#search-text").val("");
             $.get( "/render.php?q=" + encodeURIComponent($( "#search-text").val()), function( data ) {
                 $( ".table-hover" ).html( data );
                 $("#spin").hide();
             });
+            $( "#search-text").val("");
         }
         event.preventDefault();
     });
