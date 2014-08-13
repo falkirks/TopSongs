@@ -25,16 +25,19 @@ options = {
 var basil = new window.Basil(options);
 $.get( "/render.php", function( data ) {
     $( ".table-hover" ).html( data );
+    $("#spin").hide();
     $(document).on('click', 'tr', function(event){
         if(basil.get($(this).attr("waiting")) == null){
-            var id = $(this).attr("waiting");
+            var id = this;
             $.get( "/render.php?song=" + $(this).attr("waiting"), function( data ) {
-                basil.set(id, data);
-                runPlayer(id);
+                basil.set($(id).attr("waiting"), data);
+                runPlayer($(id).attr("waiting"));
+                renderControls(id);
             });
         }
         else{
             runPlayer($(this).attr("waiting"));
+            renderControls(this);
         }
     });
     $( "#search-box" ).submit(function( event ) {
@@ -48,7 +51,20 @@ $.get( "/render.php", function( data ) {
         }
         event.preventDefault();
     });
-    $("#spin").hide();
+    $(document).on('click', '#play-control-icon', function(event){
+        if(player){
+            if(player.paused()){
+                player.play();
+                $(this).removeClass("glyphicon-play");
+                $(this).addClass("glyphicon-pause");
+            }
+            else{
+                player.pause();
+                $(this).removeClass("glyphicon-pause");
+                $(this).addClass("glyphicon-play");
+            }
+        }
+    });
 });
 function runPlayer(id){
     if(player){
@@ -62,3 +78,8 @@ function runPlayer(id){
         $("#spin").hide();
     });
 }
+function renderControls(id){
+    $(".blur").attr("src", $(id).find("img").attr("src")); //Render blurred cover
+    if(!$("#controls").is(":visible")) $("#controls").fadeIn(); //Fade in if not visible
+}
+
