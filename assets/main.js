@@ -70,6 +70,7 @@ $.get( "/render.php", function( data ) {
                 $(this).addClass("glyphicon-play");
             }
         }
+        return false;
     });
     $(document).on('click', '#main-link', function(){
         $("#spin").show();
@@ -118,7 +119,14 @@ $.get( "/render.php", function( data ) {
             }
         }, "main");
     });
-
+    $(document).on('click', '#storage-button', function(event){
+        alertify.confirm("Do you want to clear link cache?", function (e) {
+            if (e) {
+                basil.reset();
+                alertify.success("Data cleared.");
+            }
+        });
+    });
 });
 function runPlayer(id){
     if(player){

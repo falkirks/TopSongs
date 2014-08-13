@@ -231,3 +231,9 @@ img.blur {
     color: #f5f5f5;
     font-size: 35pt;
 }
+#clear-storage{
+    text-align: center;
+    width: 100%;
+    padding: 50px;
+    font-size: 25pt;
+}
