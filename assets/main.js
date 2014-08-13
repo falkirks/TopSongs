@@ -16,13 +16,19 @@ var opts = {
     top: '50%', // Top position relative to parent
     left: '50%' // Left position relative to parent
 };
+var currid;
 var player = false;
 var paused = true;
 var spinner = new Spinner(opts).spin(document.getElementById('spin'));
 options = {
-    namespace: 'topsongs'
+    namespace: 'ylink'
 };
 var basil = new window.Basil(options);
+options = {
+    namespace: 'playlist'
+};
+var playlist = new window.Basil(options);
+
 $.get( "/render.php", function( data ) {
     $( ".table-hover" ).html( data );
     $("#spin").hide();
@@ -51,7 +57,7 @@ $.get( "/render.php", function( data ) {
         }
         event.preventDefault();
     });
-    $(document).on('click', '#play-control-icon', function(event){
+    $(document).on('click', '#play-control-icon', function(){
         if(player){
             if(player.paused()){
                 player.play();
@@ -65,21 +71,79 @@ $.get( "/render.php", function( data ) {
             }
         }
     });
+    $(document).on('click', '#main-link', function(){
+        $("#spin").show();
+        $.get( "/render.php", function( data ) {
+            $( ".table-hover" ).html( data );
+            $("#spin").hide();
+        });
+    });
+    $(document).on('click', '#search-link', function(){
+        $("#search-box").fadeToggle();
+    });
+    $(document).on('click', '#playlists-link', function(event){
+        alertify.prompt("What playlist do you want to start playing?", function (e, str) {
+            if (e) {
+                p = playlist.get(str);
+                if(p == null){
+                    alertify.log("Playlist doesn't exist.");
+                }
+                else{
+                    $("#spin").show();
+                    $.post( "/render.php", { playlist: p.join('%%%')}, function( data ) {
+                        $( ".table-hover" ).html( data );
+                        $("#spin").hide();
+                    });
+                }
+            }
+        }, "main");
+    });
+    $(document).on('click', '#playlist-icon', function(event){
+        alertify.prompt("What playlist do you want to add/remove this song from?", function (e, str) {
+            if (e) {
+                p = playlist.get(str);
+                if(p == null) p = [];
+                id = inArray(currid, p);
+                if(id === false){
+                    p.push(currid);
+                    playlist.set(str, p);
+                    alertify.log("Added.");
+                }
+                else{
+                    p.splice(id, 1);
+                    if(p.length == 0) playlist.remove(str);
+                    else playlist.set(str, p);
+                    alertify.log("Removed.");
+                }
+            }
+        }, "main");
+    });
+
 });
 function runPlayer(id){
     if(player){
         player.dispose();
-        $('<video id="player" src="" width="0" height="0" preload="auto" loop="loop"></video>').appendTo( "body" );
+        $('<video id="player" src="" width="0" height="0" preload="auto"></video>').appendTo( "body" );
     }
     $("#spin").show();
+    currid = id;
     videojs('player', { "techOrder": ["youtube"], "src": basil.get(id) }).ready(function() {
         player = this;
         player.play();
         $("#spin").hide();
+        $("#play-control-icon").removeClass("glyphicon-play");
+        $("#play-control-icon").addClass("glyphicon-pause");
     });
 }
 function renderControls(id){
     $(".blur").attr("src", $(id).find("img").attr("src")); //Render blurred cover
     if(!$("#controls").is(":visible")) $("#controls").fadeIn(); //Fade in if not visible
-}
 
+}
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle) return i;
+    }
+    return false;
+}

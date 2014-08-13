@@ -2,7 +2,7 @@
 class YouTubeLinkFetch{
     public $data, $link;
     public function __construct($data){
-        $this->data = base64_decode($data);
+        $this->data = $data;
     }
     public function sendQuery($api){
         $res = json_decode(file_get_contents($api. urlencode($this->data)), true);

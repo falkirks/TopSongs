@@ -11,8 +11,8 @@ body {
 div.table-title {
     display: block;
     margin: auto;
-    max-width: 700px;
-    padding:5px;
+    max-width: 850px;
+    padding-bottom: 5px;
     width: 100%;
 }
 
@@ -34,7 +34,7 @@ div.table-title {
     border-collapse: collapse;
     height: 320px;
     margin: auto;
-    max-width: 700px;
+    max-width: 850px;
     padding:5px;
     width: 100%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -192,6 +192,9 @@ input[type=submit]:hover {
 h1 {
     color: #666;
 }
+#search-box{
+    display: none;
+}
 #controls{
     background-color: cornflowerblue;
     display: none;
@@ -221,10 +224,10 @@ img.blur {
     left:0;
     width:100%;
 }
-#play-control-icon{
-    position: absolute;
-    padding-left: 50px;
-    padding-top: 25px;
+#control-list li{
+    display: inline;
+    list-style-type: none;
+    padding-right: 20px;
+    color: #f5f5f5;
     font-size: 35pt;
-    color: #ffffff;
 }
