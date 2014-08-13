@@ -16,28 +16,25 @@ var opts = {
     top: '50%', // Top position relative to parent
     left: '50%' // Left position relative to parent
 };
-var curr;
 var player = false;
 var paused = true;
 var spinner = new Spinner(opts).spin(document.getElementById('spin'));
-
+options = {
+    namespace: 'topsongs'
+};
+var basil = new window.Basil(options);
 $.get( "/render.php", function( data ) {
     $( ".table-hover" ).html( data );
     $(document).on('click', 'tr', function(event){
-        if($(this).attr("href") == curr){
-            if(player.paused()) player.play();
-            else player.pause();
+        if(basil.get($(this).attr("waiting")) == null){
+            var id = $(this).attr("waiting");
+            $.get( "/render.php?song=" + $(this).attr("waiting"), function( data ) {
+                basil.set(id, data);
+                runPlayer(id);
+            });
         }
         else{
-            if(player){
-                player.dispose();
-                $('<video id="player" src="" width="0" height="0" preload="auto" loop="loop"></video>').appendTo( "body" );
-            }
-            curr = $(this).attr("href");
-            videojs('player', { "techOrder": ["youtube"], "src": curr }).ready(function() {
-                player = this;
-                player.play();
-            });
+            runPlayer($(this).attr("waiting"));
         }
     });
     $( "#search-box" ).submit(function( event ) {
@@ -53,3 +50,15 @@ $.get( "/render.php", function( data ) {
     });
     $("#spin").hide();
 });
+function runPlayer(id){
+    if(player){
+        player.dispose();
+        $('<video id="player" src="" width="0" height="0" preload="auto" loop="loop"></video>').appendTo( "body" );
+    }
+    $("#spin").show();
+    videojs('player', { "techOrder": ["youtube"], "src": basil.get(id) }).ready(function() {
+        player = this;
+        player.play();
+        $("#spin").hide();
+    });
+}
