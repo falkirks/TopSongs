@@ -8,7 +8,7 @@ if(isset($_POST['playlist'])){
     $p->fetchPlaylist($_POST['playlist']);
     die($p->dumpSongs('
                     <tr waiting="ID">
-                    <td class="text-left small"><img src="IMG">
+                    <td class="text-left small"><img class="album-art" src="IMG">
                     </td>
                     <td class="text-left">
                     <b>NAME - ARTIST</b>
@@ -27,7 +27,7 @@ else{
     //$p->generateLinks("http://gdata.youtube.com/feeds/api/videos?alt=json&max-results=1&q=");
     die($p->dumpSongs('
                     <tr waiting="ID">
-                    <td class="text-left small"><img src="IMG">
+                    <td class="text-left small"><img class="album-art" src="IMG">
                     </td>
                     <td class="text-left">
                     <b>NAME - ARTIST</b>

@@ -237,3 +237,7 @@ img.blur {
     padding: 50px;
     font-size: 25pt;
 }
+.album-art{
+    width: 60px;
+    height: 60px;
+}

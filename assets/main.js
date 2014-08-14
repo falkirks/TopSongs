@@ -37,12 +37,12 @@ $.get( "/render.php", function( data ) {
             var id = this;
             $.get( "/render.php?song=" + $(this).attr("waiting"), function( data ) {
                 basil.set($(id).attr("waiting"), data);
-                runPlayer($(id).attr("waiting"));
+                runPlayer(id);
                 renderControls(id);
             });
         }
         else{
-            runPlayer($(this).attr("waiting"));
+            runPlayer(this);
             renderControls(this);
         }
     });
@@ -104,9 +104,9 @@ $.get( "/render.php", function( data ) {
             if (e) {
                 p = playlist.get(str);
                 if(p == null) p = [];
-                id = inArray(currid, p);
+                id = inArray($(currid).attr('waiting'), p);
                 if(id === false){
-                    p.push(currid);
+                    p.push($(currid).attr('waiting'));
                     playlist.set(str, p);
                     alertify.log("Added.");
                 }
@@ -135,12 +135,22 @@ function runPlayer(id){
     }
     $("#spin").show();
     currid = id;
-    videojs('player', { "techOrder": ["youtube"], "src": basil.get(id) }).ready(function() {
+    videojs('player', { "techOrder": ["youtube"], "src": basil.get($(id).attr('waiting')) }).ready(function() {
         player = this;
         player.play();
         $("#spin").hide();
         $("#play-control-icon").removeClass("glyphicon-play");
         $("#play-control-icon").addClass("glyphicon-pause");
+        player.on("ended", function(){
+            n = $(currid).next();
+            if(n == null){
+                player.setTime(0);
+                player.play();
+            }
+            else{
+                n.click();
+            }
+        });
     });
 }
 function renderControls(id){
@@ -154,4 +164,7 @@ function inArray(needle, haystack) {
         if(haystack[i] == needle) return i;
     }
     return false;
+}
+function reMap(val, a, b, c, d){
+    return (((val - a) * (d - c)) / (b - a)) + c
 }
