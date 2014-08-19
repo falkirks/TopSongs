@@ -1,8 +1,8 @@
 <?php
-require("topsongs/SongParser.php");
-require("topsongs/Song.php");
-require("topsongs/YouTubeLinkFetch.php");
-require("topsongs/PlaylistParser.php");
+require "/app/topsongs/SongParser.php";
+require "/app/topsongs/Song.php";
+require "/app/topsongs/YouTubeLinkFetch.php";
+require "/app/topsongs/PlaylistParser.php";
 if(isset($_POST['playlist'])){
     $p = new PlayListParser;
     $p->fetchPlaylist($_POST['playlist']);
