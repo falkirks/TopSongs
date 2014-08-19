@@ -1,8 +1,8 @@
 <?php
-require "/app/topsongs/SongParser.php";
-require "/app/topsongs/Song.php";
-require "/app/topsongs/YouTubeLinkFetch.php";
-require "/app/topsongs/PlaylistParser.php";
+require __DIR__ . "/topsongs/SongParser.php";
+require __DIR__ . "/topsongs/Song.php";
+require __DIR__ ."/topsongs/YouTubeLinkFetch.php";
+require __DIR__ . "/topsongs/PlaylistParser.php";
 if(isset($_POST['playlist'])){
     $p = new PlayListParser;
     $p->fetchPlaylist($_POST['playlist']);
